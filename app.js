@@ -10,15 +10,29 @@ let wainwrights;
 async function main(){
     wainwrights = await getWainwrightsData();
     console.log(wainwrights);
+    displayWainwrights(wainwrights);
+}
+main();
+
+function displayWainwrights(wainwrights) {
     const wainwrightsList = document.getElementById('wainwrights-list');
-    const filteredList = wainwrights.filter(element => {
-        return element["name"].includes("f")
-    });
-    filteredList.forEach(wainwright => {
+    wainwrightsList.innerHTML = ''; // Clear existing list
+
+    wainwrights.forEach(wainwright => {
         const listItem = document.createElement('li');
         listItem.textContent = `${wainwright["name"]}, Height: ${wainwright["heightMetres"]}, Area: ${wainwright["area"]["areaName"]}`;
         wainwrightsList.appendChild(listItem);
     });
 }
-main();
+
+async function filterWainwrights(event) {
+    event.preventDefault(); // Prevent form submission
+    const searchTerm = document.getElementById("filter-input").value.toLowerCase();
+    const filteredList = wainwrights.filter(element => {
+        return element["name"].toLowerCase().includes(searchTerm);
+    });
+    displayWainwrights(filteredList);
+}
+
+document.getElementById('filter-form').addEventListener('submit', filterWainwrights);
 
